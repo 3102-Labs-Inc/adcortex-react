@@ -1,0 +1,37 @@
+{
+  "name": "adcortex",
+  "version": "1.0.0",
+  "description": "SDK to integrate adcortex into your website",
+  "main": "src/adcortex/index.ts",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/3102-Labs-Inc/adcortex-react.git"
+  },
+  "keywords": [
+    "adcortex",
+    "adcortex-react",
+    "adcortex-sdk",
+    "advise",
+    "advise-react",
+    "advise-sdk"
+  ],
+  "author": "skrj-gh",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/3102-Labs-Inc/adcortex-react/issues"
+  },
+  "homepage": "https://github.com/3102-Labs-Inc/adcortex-react#readme",
+  "dependencies": {
+    "axios": "^1.8.4",
+    "dotenv": "^16.5.0",
+    "iso-3166-1": "^2.1.1",
+    "zod": "^3.24.2"
+  },
+  "devDependencies": {
+    "@types/node": "^22.14.1"
+  }
+}
