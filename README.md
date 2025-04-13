@@ -42,3 +42,5 @@ client.fetch_ad(messages).then(adResponse => {
     console.error("Error fetching ad:", err);
 });
 ```
+
+4. **For detailed usage see examples folder**
