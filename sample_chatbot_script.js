@@ -1,5 +1,5 @@
 // Import necessary modules
-import { AdcortexChatClient, SessionInfo, UserInfo, Platform, Message } from 'adcortex';
+import { AdcortexChatClient, SessionInfo, UserInfo, Platform, Message } from 'adcortex-js';
 
 // Initialize session info
 const sessionInfo = new SessionInfo({

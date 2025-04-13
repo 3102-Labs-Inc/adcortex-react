@@ -1,7 +1,7 @@
 {
   "type": "module",
   "dependencies": {
-    "adcortex": "^1.0.1",
+    "adcortex-js": "^1.0.0",
     "perf_hooks": "^0.0.1"
   },
   "devDependencies": {

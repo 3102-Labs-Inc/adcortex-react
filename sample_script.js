@@ -1,4 +1,4 @@
-import * as AdCortex from 'adcortex';
+import * as AdCortex from 'adcortex-js';
 
 const { AdcortexClient, SessionInfo, UserInfo, Platform, Message } = AdCortex;
 import { performance } from 'perf_hooks';
@@ -38,7 +38,7 @@ const messages = [
 
 // Measure latency and fetch ad
 const startTime = performance.now();
-client.fetchAd(messages).then(adResponse => {
+client.fetch_ad(messages).then(adResponse => {
     const endTime = performance.now();
     const latency = (endTime - startTime) / 1000; // Convert to seconds
 
