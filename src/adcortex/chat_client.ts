@@ -14,7 +14,7 @@ const AD_FETCH_URL = "https://adcortex.3102labs.com/ads/match";
 class AdcortexChatClient {
     session_info: SessionInfo;
     context_template: string|null;
-    apiKey: string | null;
+    api_key: string | null;
     num_messages_before_ad: number;
     num_messages_between_ads!: number;
     headers: { "Content-Type": string; "X-API-KEY": string | null; };
@@ -25,19 +25,19 @@ class AdcortexChatClient {
   constructor(
     sessionInfo: SessionInfo,
     context_template = DEFAULT_CONTEXT_TEMPLATE,
-    apiKey = null,
+    api_key = null,
     num_messages_before_ad = 3,
     num_messages_between_ads = 2
   ) {
     this.session_info = sessionInfo;
     this.context_template = context_template;
-    this.apiKey = apiKey || process.env.ADCORTEX_API_KEY!;
+    this.api_key = api_key || process.env.ADCORTEX_API_KEY!;
     this.headers = {
       "Content-Type": "application/json",
-      "X-API-KEY": this.apiKey,
+      "X-API-KEY": this.api_key,
     };
 
-    if (!this.apiKey) {
+    if (!this.api_key) {
       throw new Error("ADCORTEX_API_KEY is not set and not provided");
     }
 
