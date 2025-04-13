@@ -16,7 +16,7 @@ class AdcortexChatClient {
     context_template: string|null;
     apiKey: string | null;
     num_messages_before_ad: number;
-    num_messages_between_ads: number;
+    num_messages_between_ads!: number;
     headers: { "Content-Type": string; "X-API-KEY": string | null; };
     messages: Message[]; // Store messages
     latest_ad: Ad | null;
@@ -167,7 +167,7 @@ class AdcortexChatClient {
   }
 }
 
-module.exports = {
+export {
   AdcortexChatClient,
   DEFAULT_CONTEXT_TEMPLATE,
   AD_FETCH_URL

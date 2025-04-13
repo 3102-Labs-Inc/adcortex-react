@@ -90,7 +90,7 @@ export const Interest = {
 };
 
 // Schema for UserInfo - equivalent to Pydantic BaseModel
-const UserInfoSchema = z.object({
+export const UserInfoSchema = z.object({
   /**
    * Unique identifier for the user.
    */
@@ -130,7 +130,7 @@ const UserInfoSchema = z.object({
 });
 
 // Schema for Platform
-const PlatformSchema = z.object({
+export const PlatformSchema = z.object({
   /**
    * Name of the platform.
    */
@@ -142,7 +142,7 @@ const PlatformSchema = z.object({
 });
 
 // Schema for SessionInfo
-const SessionInfoSchema = z.object({
+export const SessionInfoSchema = z.object({
   /**
    * Unique identifier for the session.
    */
@@ -166,7 +166,7 @@ const SessionInfoSchema = z.object({
 });
 
 // Schema for Message
-const MessageSchema = z.object({
+export const MessageSchema = z.object({
   /**
    * The role of the message sender (either user or AI).
    */
@@ -178,7 +178,7 @@ const MessageSchema = z.object({
 });
 
 // Schema for Ad
-const AdSchema = z.object({
+export const AdSchema = z.object({
   /**
    * Identifier for the advertisement.
    */
@@ -204,12 +204,12 @@ const AdSchema = z.object({
 // Create class-like constructs with validation
 export class UserInfo {
 
-  user_id: string;
-  age: number;
-  gender: typeof Gender;
-  location: string;
-  language: string;
-  interests: Array<typeof Interest>;
+  user_id!: string;
+  age!: number;
+  gender!: typeof Gender;
+  location!: string;
+  language!: string;
+  interests!: Array<typeof Interest>;
 
   constructor(data: unknown) {
     const validated = UserInfoSchema.parse(data);
@@ -219,8 +219,8 @@ export class UserInfo {
 
 export class Platform {
 
-  name: string;
-  version: string;
+  name!: string;
+  version!: string;
 
   constructor(data: unknown) {
     const validated = PlatformSchema.parse(data);
@@ -230,11 +230,11 @@ export class Platform {
 
 export class SessionInfo {
 
-  session_id: string;
-  character_name: string;
-  character_metadata: Record<string, any>;
-  user_info: UserInfo;
-  platform: Platform;
+  session_id!: string;
+  character_name!: string;
+  character_metadata!: Record<string, any>;
+  user_info!: UserInfo;
+  platform!: Platform;
 
   constructor(data: unknown) {
     const validated = SessionInfoSchema.parse(data);
@@ -244,8 +244,8 @@ export class SessionInfo {
 
 export class Message {
 
-  role: typeof Role;
-  content: string;
+  role!: typeof Role;
+  content!: string;
 
   constructor(data: unknown) {
     const validated = MessageSchema.parse(data);
@@ -255,11 +255,11 @@ export class Message {
 
 export class Ad {
 
-  idx: number;
-  ad_title: string;
-  ad_description: string;
-  placement_template: string;
-  link: string;
+  idx!: number;
+  ad_title!: string;
+  ad_description!: string;
+  placement_template!: string;
+  link!: string;
 
   constructor(data: unknown) {
     const validated = AdSchema.parse(data);
@@ -267,21 +267,21 @@ export class Ad {
   }
 }
 
-module.exports = {
-  // Enums
-  Gender,
-  Role,
-  Interest,
-  // Schemas
-  UserInfoSchema,
-  PlatformSchema,
-  SessionInfoSchema,
-  MessageSchema,
-  AdSchema,
-  // Classes
-  UserInfo,
-  Platform,
-  SessionInfo,
-  Message,
-  Ad
-};
+// module.exports = {
+//   // Enums
+//   Gender,
+//   Role,
+//   Interest,
+//   // Schemas
+//   UserInfoSchema,
+//   PlatformSchema,
+//   SessionInfoSchema,
+//   MessageSchema,
+//   AdSchema,
+//   // Classes
+//   UserInfo,
+//   Platform,
+//   SessionInfo,
+//   Message,
+//   Ad,
+// };
