@@ -4,26 +4,26 @@ import dotenv from 'dotenv';
 dotenv.config();
 const DEFAULT_CONTEXT_TEMPLATE = "";
 class AdcortexClient {
-    constructor(sessionInfo, contextTemplate = DEFAULT_CONTEXT_TEMPLATE, apiKey = null) {
-        this.sessionInfo = sessionInfo;
-        this.contextTemplate = contextTemplate;
-        this.apiKey = apiKey || process.env.ADCORTEX_API_KEY;
-        this.baseUrl = "https://adcortex.3102labs.com/ads/match";
-        if (!this.apiKey) {
+    constructor(session_info, context_template = DEFAULT_CONTEXT_TEMPLATE, api_key = null) {
+        this.session_info = session_info;
+        this.context_template = context_template;
+        this.api_key = api_key || process.env.ADCORTEX_API_KEY;
+        this.base_url = "https://adcortex.3102labs.com/ads/match";
+        if (!this.api_key) {
             throw new Error("ADCORTEX_API_KEY is not set and not provided");
         }
         this.headers = {
             "Content-Type": "application/json",
-            "X-API-KEY": this.apiKey,
+            "X-API-KEY": this.api_key,
         };
     }
     _generate_payload(messages) {
         const payload = {
-            "RGUID": this.sessionInfo.session_id,
-            "session_info": this.sessionInfo,
-            "user_data": this.sessionInfo.user_info,
+            "RGUID": this.session_info.session_id,
+            "session_info": this.session_info,
+            "user_data": this.session_info.user_info,
             "messages": messages,
-            "platform": this.sessionInfo.platform,
+            "platform": this.session_info.platform,
         };
         return payload;
     }
@@ -31,7 +31,7 @@ class AdcortexClient {
     async fetchAd(messages) {
         const payload = this._generate_payload(messages);
         try {
-            const response = await axios.post(this.baseUrl, payload, { headers: this.headers });
+            const response = await axios.post(this.base_url, payload, { headers: this.headers });
             // Extract the ad from the response
             const ads = response.data.ads || [];
             if (!ads.length) {
@@ -44,7 +44,7 @@ class AdcortexClient {
         }
     }
     generateContext(ad) {
-        return this.contextTemplate.replace(/\{ad_title\}/g, ad.ad_title)
+        return this.context_template.replace(/\{ad_title\}/g, ad.ad_title)
             .replace(/\{ad_description\}/g, ad.ad_description)
             .replace(/\{placement_template\}/g, ad.placement_template)
             .replace(/\{link\}/g, ad.link);

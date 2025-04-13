@@ -4,19 +4,19 @@
 import axios from 'axios';
 import dotenv from 'dotenv';
 dotenv.config();
-import { Message, Ad } from './types.js';
+import { Message, Ad } from './types';
 const DEFAULT_CONTEXT_TEMPLATE = "Here is a product the user might like: {ad_title} - {ad_description} - {link}";
 const AD_FETCH_URL = "https://adcortex.3102labs.com/ads/match";
 class AdcortexChatClient {
-    constructor(sessionInfo, context_template = DEFAULT_CONTEXT_TEMPLATE, apiKey = null, num_messages_before_ad = 3, num_messages_between_ads = 2) {
+    constructor(sessionInfo, context_template = DEFAULT_CONTEXT_TEMPLATE, api_key = null, num_messages_before_ad = 3, num_messages_between_ads = 2) {
         this.session_info = sessionInfo;
         this.context_template = context_template;
-        this.apiKey = apiKey || process.env.ADCORTEX_API_KEY;
+        this.api_key = api_key || process.env.ADCORTEX_API_KEY;
         this.headers = {
             "Content-Type": "application/json",
-            "X-API-KEY": this.apiKey,
+            "X-API-KEY": this.api_key,
         };
-        if (!this.apiKey) {
+        if (!this.api_key) {
             throw new Error("ADCORTEX_API_KEY is not set and not provided");
         }
         this.messages = []; // Initialize messages

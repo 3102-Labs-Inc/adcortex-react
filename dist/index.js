@@ -1,4 +1,4 @@
 // "ADCortex Javascript SDK"
-import { AdcortexClient } from './client.js';
-import { SessionInfo, Message, Ad, UserInfo, Platform } from './types.js';
+import { AdcortexClient } from './client';
+import { SessionInfo, Message, Ad, UserInfo, Platform } from './types';
 export { AdcortexClient, SessionInfo, Message, Ad, UserInfo, Platform };

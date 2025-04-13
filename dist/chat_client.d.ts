@@ -4,7 +4,7 @@ declare const AD_FETCH_URL = "https://adcortex.3102labs.com/ads/match";
 declare class AdcortexChatClient {
     session_info: SessionInfo;
     context_template: string | null;
-    apiKey: string | null;
+    api_key: string | null;
     num_messages_before_ad: number;
     num_messages_between_ads: number;
     headers: {
@@ -14,7 +14,7 @@ declare class AdcortexChatClient {
     messages: Message[];
     latest_ad: Ad | null;
     shown_ads: Record<string, any>[];
-    constructor(sessionInfo: SessionInfo, context_template?: string, apiKey?: null, num_messages_before_ad?: number, num_messages_between_ads?: number);
+    constructor(sessionInfo: SessionInfo, context_template?: string, api_key?: null, num_messages_before_ad?: number, num_messages_between_ads?: number);
     /**
      * Add a message and fetch an ad if applicable.
      * @param {string} role - The role of the message sender

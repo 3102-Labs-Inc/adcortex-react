@@ -1,14 +1,14 @@
 import { SessionInfo, Message, Ad } from './types';
 declare class AdcortexClient {
-    sessionInfo: SessionInfo;
-    contextTemplate: string | null;
-    apiKey: string | null;
-    baseUrl: string;
+    session_info: SessionInfo;
+    context_template: string | null;
+    api_key: string | null;
+    base_url: string;
     headers: {
         "Content-Type": string;
         "X-API-KEY": string | null;
     };
-    constructor(sessionInfo: any, contextTemplate?: string, apiKey?: null);
+    constructor(session_info: SessionInfo, context_template?: string, api_key?: null);
     _generate_payload(messages: Message[]): any;
     fetchAd(messages: Message[]): Promise<Ad | null>;
     generateContext(ad: Ad): string;
