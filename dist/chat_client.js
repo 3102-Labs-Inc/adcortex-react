@@ -4,7 +4,7 @@
 import axios from 'axios';
 import dotenv from 'dotenv';
 dotenv.config();
-import { Message, Ad } from './types';
+import { Message, Ad } from './types.js';
 const DEFAULT_CONTEXT_TEMPLATE = "Here is a product the user might like: {ad_title} - {ad_description} - {link}";
 const AD_FETCH_URL = "https://adcortex.3102labs.com/ads/match";
 class AdcortexChatClient {
