@@ -1,5 +1,5 @@
 {
-  "name": "adcortex",
+  "name": "adcortex-js",
   "version": "1.0.0",
   "description": "SDK to integrate adcortex into your website",
   "main": "dist/index.js",
@@ -16,6 +16,7 @@
   "keywords": [
     "adcortex",
     "adcortex-react",
+    "adcortex-js",
     "adcortex-sdk",
     "advise",
     "advise-react",
