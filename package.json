@@ -1,6 +1,6 @@
 {
   "name": "adcortex",
-  "version": "1.0.3",
+  "version": "1.0.0",
   "description": "SDK to integrate adcortex into your website",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

@@ -48,7 +48,7 @@ class AdcortexClient {
   }
 
   // NOTE: @Rahul review this for functionality
-  async fetchAd(messages: Message[]): Promise<Ad | null> {
+  async fetch_ad(messages: Message[]): Promise<Ad | null> {
     const payload = this._generate_payload(messages);
     try {
       const response = await axios.post(this.base_url, payload, { headers: this.headers });
@@ -65,7 +65,7 @@ class AdcortexClient {
     }
   }
 
-  generateContext(ad: Ad) {
+  generate_context(ad: Ad) {
     return this.context_template!.replace(/\{ad_title\}/g, ad.ad_title)
       .replace(/\{ad_description\}/g, ad.ad_description)
       .replace(/\{placement_template\}/g, ad.placement_template)

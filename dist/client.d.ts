@@ -10,7 +10,7 @@ declare class AdcortexClient {
     };
     constructor(session_info: SessionInfo, context_template?: string, api_key?: null);
     _generate_payload(messages: Message[]): any;
-    fetchAd(messages: Message[]): Promise<Ad | null>;
-    generateContext(ad: Ad): string;
+    fetch_ad(messages: Message[]): Promise<Ad | null>;
+    generate_context(ad: Ad): string;
 }
 export { AdcortexClient };
