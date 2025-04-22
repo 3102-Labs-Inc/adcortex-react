@@ -1,335 +1,324 @@
 /**
  * Types for ADCortex API.
  *
- * This module defines data classes and enumerations used by the ADCortex API client.
+ * This module defines interfaces, enums, and validation schemas used by the ADCortex API client.
  */
-import z from 'zod';
+import { z } from 'zod';
 /**
  * Gender enumeration.
  *
- * @readonly
- * @enum {string}
+ * Attributes:
+ *     male: Represents the male gender.
+ *     female: Represents the female gender.
+ *     other: Represents any gender not covered by male or female.
  */
-export declare const Gender: {
-    /**
-     * Represents the male gender.
-     */
-    male: string;
-    /**
-     * Represents the female gender.
-     */
-    female: string;
-    /**
-     * Represents any gender not covered by male or female.
-     */
-    other: string;
-};
+export declare enum Gender {
+    male = "male",
+    female = "female",
+    other = "other"
+}
 /**
  * Role enumeration.
  *
- * @readonly
- * @enum {string}
+ * Attributes:
+ *     user: Indicates that the message sender is a user.
+ *     ai: Indicates that the message sender is an AI.
  */
-export declare const Role: {
-    /**
-     * Indicates that the message sender is a user.
-     */
-    user: string;
-    /**
-     * Indicates that the message sender is an AI.
-     */
-    ai: string;
-};
+export declare enum Role {
+    user = "user",
+    ai = "ai"
+}
 /**
  * Interest enumeration.
  *
- * @readonly
- * @enum {string}
+ * Attributes:
+ *     flirting: Indicates an interest in flirting.
+ *     gaming: Indicates an interest in gaming.
+ *     sports: Indicates an interest in sports.
+ *     music: Indicates an interest in music.
+ *     travel: Indicates an interest in travel.
+ *     technology: Indicates an interest in technology.
+ *     art: Indicates an interest in art.
+ *     cooking: Indicates an interest in cooking.
+ *     all: Represents all interests.
  */
-export declare const Interest: {
-    /**
-     * Indicates an interest in flirting.
-     */
-    flirting: string;
-    /**
-     * Indicates an interest in gaming.
-     */
-    gaming: string;
-    /**
-     * Indicates an interest in sports.
-     */
-    sports: string;
-    /**
-     * Indicates an interest in music.
-     */
-    music: string;
-    /**
-     * Indicates an interest in travel.
-     */
-    travel: string;
-    /**
-     * Indicates an interest in technology.
-     */
-    technology: string;
-    /**
-     * Indicates an interest in art.
-     */
-    art: string;
-    /**
-     * Indicates an interest in cooking.
-     */
-    cooking: string;
-    /**
-     * Represents all interests.
-     */
-    all: string;
-};
-export declare const UserInfoSchema: z.ZodObject<{
-    /**
-     * Unique identifier for the user.
-     */
-    user_id: z.ZodString;
-    /**
-     * User's age.
-     */
-    age: z.ZodNumber;
-    /**
-     * User's gender.
-     */
-    gender: z.ZodEnum<[string, string, string]>;
-    /**
-     * User's location (ISO 3166-1 alpha-2 code).
-     */
-    location: z.ZodEffects<z.ZodString, string, string>;
-    /**
-     * Preferred language (must be "english").
-     */
-    language: z.ZodEffects<z.ZodDefault<z.ZodString>, string, string | undefined>;
-    /**
-     * A list of user's interests.
-     */
-    interests: z.ZodArray<z.ZodEnum<[string, string, string, string, string, string, string, string, string]>, "many">;
-}, "strip", z.ZodTypeAny, {
-    user_id: string;
-    age: number;
-    gender: string;
-    location: string;
-    language: string;
-    interests: string[];
-}, {
-    user_id: string;
-    age: number;
-    gender: string;
-    location: string;
-    interests: string[];
-    language?: string | undefined;
-}>;
+export declare enum Interest {
+    flirting = "flirting",
+    gaming = "gaming",
+    sports = "sports",
+    music = "music",
+    travel = "travel",
+    technology = "technology",
+    art = "art",
+    cooking = "cooking",
+    all = "all"
+}
+/**
+ * Language enumeration.
+ */
+export declare enum Language {
+    ar = "ar",// Arabic
+    bg = "bg",// Bulgarian
+    ca = "ca",// Catalan
+    cs = "cs",// Czech
+    da = "da",// Danish
+    de = "de",// German
+    el = "el",// Greek
+    en = "en",// English
+    es = "es",// Spanish
+    et = "et",// Estonian
+    fa = "fa",// Persian
+    fi = "fi",// Finnish
+    fr = "fr",// French
+    gl = "gl",// Galician
+    gu = "gu",// Gujarati
+    he = "he",// Hebrew
+    hi = "hi",// Hindi
+    hr = "hr",// Croatian
+    hu = "hu",// Hungarian
+    hy = "hy",// Armenian
+    id = "id",// Indonesian
+    it = "it",// Italian
+    ja = "ja",// Japanese
+    ka = "ka",// Georgian
+    ko = "ko",// Korean
+    ku = "ku",// Kurdish
+    lt = "lt",// Lithuanian
+    lv = "lv",// Latvian
+    mk = "mk",// Macedonian
+    mn = "mn",// Mongolian
+    mr = "mr",// Marathi
+    ms = "ms",// Malay
+    my = "my",// Burmese
+    nb = "nb",// Norwegian Bokmål
+    nl = "nl",// Dutch
+    pl = "pl",// Polish
+    pt = "pt",// Portuguese
+    ro = "ro",// Romanian
+    ru = "ru",// Russian
+    sk = "sk",// Slovak
+    sl = "sl",// Slovenian
+    sq = "sq",// Albanian
+    sr = "sr",// Serbian
+    sv = "sv",// Swedish
+    th = "th",// Thai
+    tr = "tr",// Turkish
+    uk = "uk",// Ukrainian
+    ur = "ur",// Urdu
+    vi = "vi"
+}
+/**
+ * Contains platform-related metadata.
+ *
+ * Attributes:
+ *     name (string): Platform name
+ *     varient (string): varient for experimentation
+ */
 export declare const PlatformSchema: z.ZodObject<{
-    /**
-     * Name of the platform.
-     */
     name: z.ZodString;
-    /**
-     * Version of the platform.
-     */
-    version: z.ZodString;
+    varient: z.ZodDefault<z.ZodString>;
 }, "strip", z.ZodTypeAny, {
     name: string;
-    version: string;
+    varient: string;
 }, {
     name: string;
-    version: string;
+    varient?: string | undefined;
 }>;
+export type Platform = z.infer<typeof PlatformSchema>;
+/**
+ * Stores user information for ADCortex API.
+ *
+ * Attributes:
+ *     user_id (string): Unique identifier for the user.
+ *     age (number): User's age.
+ *     gender (string): User's gender (must be one of the Gender enum values).
+ *     location (string): User's location (ISO 3166-1 alpha-2 code).
+ *     language (string): Preferred language.
+ *     interests (Interest[]): List of user's interests.
+ */
+export declare const UserInfoSchema: z.ZodObject<{
+    user_id: z.ZodString;
+    age: z.ZodEffects<z.ZodNumber, number, number>;
+    gender: z.ZodNativeEnum<typeof Gender>;
+    location: z.ZodEffects<z.ZodString, string, string>;
+    language: z.ZodNativeEnum<typeof Language>;
+    interests: z.ZodArray<z.ZodNativeEnum<typeof Interest>, "many">;
+}, "strip", z.ZodTypeAny, {
+    user_id: string;
+    age: number;
+    gender: Gender;
+    location: string;
+    language: Language;
+    interests: Interest[];
+}, {
+    user_id: string;
+    age: number;
+    gender: Gender;
+    location: string;
+    language: Language;
+    interests: Interest[];
+}>;
+export type UserInfo = z.infer<typeof UserInfoSchema>;
+/**
+ * Stores session details including user.
+ *
+ * Attributes:
+ *     session_id (string): Unique identifier for the session.
+ *     character_name (string): Name of the character (assistant).
+ *     character_metadata (string): Additional metadata for the character as a string.
+ *     user_info (UserInfo): User information.
+ *     platform (Platform): Platform information.
+ */
 export declare const SessionInfoSchema: z.ZodObject<{
-    /**
-     * Unique identifier for the session.
-     */
     session_id: z.ZodString;
-    /**
-     * Name of the character (assistant).
-     */
     character_name: z.ZodString;
-    /**
-     * Additional metadata for the character.
-     */
-    character_metadata: z.ZodDefault<z.ZodRecord<z.ZodString, z.ZodAny>>;
-    /**
-     * User information.
-     */
+    character_metadata: z.ZodString;
     user_info: z.ZodObject<{
-        /**
-         * Unique identifier for the user.
-         */
         user_id: z.ZodString;
-        /**
-         * User's age.
-         */
-        age: z.ZodNumber;
-        /**
-         * User's gender.
-         */
-        gender: z.ZodEnum<[string, string, string]>;
-        /**
-         * User's location (ISO 3166-1 alpha-2 code).
-         */
+        age: z.ZodEffects<z.ZodNumber, number, number>;
+        gender: z.ZodNativeEnum<typeof Gender>;
         location: z.ZodEffects<z.ZodString, string, string>;
-        /**
-         * Preferred language (must be "english").
-         */
-        language: z.ZodEffects<z.ZodDefault<z.ZodString>, string, string | undefined>;
-        /**
-         * A list of user's interests.
-         */
-        interests: z.ZodArray<z.ZodEnum<[string, string, string, string, string, string, string, string, string]>, "many">;
+        language: z.ZodNativeEnum<typeof Language>;
+        interests: z.ZodArray<z.ZodNativeEnum<typeof Interest>, "many">;
     }, "strip", z.ZodTypeAny, {
         user_id: string;
         age: number;
-        gender: string;
+        gender: Gender;
         location: string;
-        language: string;
-        interests: string[];
+        language: Language;
+        interests: Interest[];
     }, {
         user_id: string;
         age: number;
-        gender: string;
+        gender: Gender;
         location: string;
-        interests: string[];
-        language?: string | undefined;
+        language: Language;
+        interests: Interest[];
     }>;
-    /**
-     * Platform details.
-     */
     platform: z.ZodObject<{
-        /**
-         * Name of the platform.
-         */
         name: z.ZodString;
-        /**
-         * Version of the platform.
-         */
-        version: z.ZodString;
+        varient: z.ZodDefault<z.ZodString>;
     }, "strip", z.ZodTypeAny, {
         name: string;
-        version: string;
+        varient: string;
     }, {
         name: string;
-        version: string;
+        varient?: string | undefined;
     }>;
 }, "strip", z.ZodTypeAny, {
     session_id: string;
     character_name: string;
-    character_metadata: Record<string, any>;
+    character_metadata: string;
     user_info: {
         user_id: string;
         age: number;
-        gender: string;
+        gender: Gender;
         location: string;
-        language: string;
-        interests: string[];
+        language: Language;
+        interests: Interest[];
     };
     platform: {
         name: string;
-        version: string;
+        varient: string;
     };
 }, {
     session_id: string;
     character_name: string;
+    character_metadata: string;
     user_info: {
         user_id: string;
         age: number;
-        gender: string;
+        gender: Gender;
         location: string;
-        interests: string[];
-        language?: string | undefined;
+        language: Language;
+        interests: Interest[];
     };
     platform: {
         name: string;
-        version: string;
+        varient?: string | undefined;
     };
-    character_metadata?: Record<string, any> | undefined;
 }>;
+export type SessionInfo = z.infer<typeof SessionInfoSchema>;
+/**
+ * Represents a single message in a conversation.
+ *
+ * Attributes:
+ *     role (Role): The role of the message sender (either user or AI).
+ *     content (string): The content of the message.
+ */
 export declare const MessageSchema: z.ZodObject<{
-    /**
-     * The role of the message sender (either user or AI).
-     */
-    role: z.ZodEnum<[string, string]>;
-    /**
-     * The content of the message.
-     */
+    role: z.ZodNativeEnum<typeof Role>;
     content: z.ZodString;
 }, "strip", z.ZodTypeAny, {
-    role: string;
+    role: Role;
     content: string;
 }, {
-    role: string;
+    role: Role;
     content: string;
 }>;
+export type Message = z.infer<typeof MessageSchema>;
+/**
+ * Represents an advertisement fetched via the ADCortex API.
+ *
+ * Attributes:
+ *     ad_title (string): Title of the advertisement.
+ *     ad_description (string): Description of the advertisement.
+ *     placement_template (string): Template used for ad placement.
+ *     link (string): URL link to the advertised product or service.
+ */
 export declare const AdSchema: z.ZodObject<{
-    /**
-     * Identifier for the advertisement.
-     */
-    idx: z.ZodNumber;
-    /**
-     * Title of the advertisement.
-     */
     ad_title: z.ZodString;
-    /**
-     * Description of the advertisement.
-     */
     ad_description: z.ZodString;
-    /**
-     * Template used for ad placement.
-     */
     placement_template: z.ZodString;
-    /**
-     * URL link to the advertised product or service.
-     */
     link: z.ZodString;
 }, "strip", z.ZodTypeAny, {
-    idx: number;
     ad_title: string;
     ad_description: string;
     placement_template: string;
     link: string;
 }, {
-    idx: number;
     ad_title: string;
     ad_description: string;
     placement_template: string;
     link: string;
 }>;
-export declare class UserInfo {
-    user_id: string;
-    age: number;
-    gender: typeof Gender;
-    location: string;
-    language: string;
-    interests: Array<typeof Interest>;
-    constructor(data: unknown);
-}
-export declare class Platform {
-    name: string;
-    version: string;
-    constructor(data: unknown);
-}
-export declare class SessionInfo {
-    session_id: string;
-    character_name: string;
-    character_metadata: Record<string, any>;
-    user_info: UserInfo;
-    platform: Platform;
-    constructor(data: unknown);
-}
-export declare class Message {
-    role: typeof Role;
-    content: string;
-    constructor(data: unknown);
-}
-export declare class Ad {
-    idx: number;
-    ad_title: string;
-    ad_description: string;
-    placement_template: string;
-    link: string;
-    constructor(data: unknown);
-}
+export type Ad = z.infer<typeof AdSchema>;
+/**
+ * Schema for validating ADCortex API responses.
+ *
+ * Attributes:
+ *     ads (Ad[]): List of ads returned by the API.
+ */
+export declare const AdResponseSchema: z.ZodObject<{
+    ads: z.ZodArray<z.ZodObject<{
+        ad_title: z.ZodString;
+        ad_description: z.ZodString;
+        placement_template: z.ZodString;
+        link: z.ZodString;
+    }, "strip", z.ZodTypeAny, {
+        ad_title: string;
+        ad_description: string;
+        placement_template: string;
+        link: string;
+    }, {
+        ad_title: string;
+        ad_description: string;
+        placement_template: string;
+        link: string;
+    }>, "many">;
+}, "strip", z.ZodTypeAny, {
+    ads: {
+        ad_title: string;
+        ad_description: string;
+        placement_template: string;
+        link: string;
+    }[];
+}, {
+    ads: {
+        ad_title: string;
+        ad_description: string;
+        placement_template: string;
+        link: string;
+    }[];
+}>;
+export type AdResponse = z.infer<typeof AdResponseSchema>;

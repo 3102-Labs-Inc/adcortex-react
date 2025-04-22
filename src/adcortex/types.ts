@@ -1,287 +1,227 @@
 /**
  * Types for ADCortex API.
- * 
- * This module defines data classes and enumerations used by the ADCortex API client.
+ *
+ * This module defines interfaces, enums, and validation schemas used by the ADCortex API client.
  */
-import z from 'zod';
-import iso3166 from 'iso-3166-1';
+
+import { z } from 'zod';
+import { countries } from 'countries-list';
 
 /**
  * Gender enumeration.
- * 
- * @readonly
- * @enum {string}
+ *
+ * Attributes:
+ *     male: Represents the male gender.
+ *     female: Represents the female gender.
+ *     other: Represents any gender not covered by male or female.
  */
-export const Gender = {
-  /**
-   * Represents the male gender.
-   */
-  male: "male",
-  /**
-   * Represents the female gender.
-   */
-  female: "female",
-  /**
-   * Represents any gender not covered by male or female.
-   */
-  other: "other"
-};
+export enum Gender {
+  male = "male",
+  female = "female",
+  other = "other"
+}
 
 /**
  * Role enumeration.
- * 
- * @readonly
- * @enum {string}
+ *
+ * Attributes:
+ *     user: Indicates that the message sender is a user.
+ *     ai: Indicates that the message sender is an AI.
  */
-export const Role = {
-  /**
-   * Indicates that the message sender is a user.
-   */
-  user: "user",
-  /**
-   * Indicates that the message sender is an AI.
-   */
-  ai: "ai"
-};
+export enum Role {
+  user = "user",
+  ai = "ai"
+}
 
 /**
  * Interest enumeration.
- * 
- * @readonly
- * @enum {string}
+ *
+ * Attributes:
+ *     flirting: Indicates an interest in flirting.
+ *     gaming: Indicates an interest in gaming.
+ *     sports: Indicates an interest in sports.
+ *     music: Indicates an interest in music.
+ *     travel: Indicates an interest in travel.
+ *     technology: Indicates an interest in technology.
+ *     art: Indicates an interest in art.
+ *     cooking: Indicates an interest in cooking.
+ *     all: Represents all interests.
  */
-export const Interest = {
-  /**
-   * Indicates an interest in flirting.
-   */
-  flirting: "flirting",
-  /**
-   * Indicates an interest in gaming.
-   */
-  gaming: "gaming",
-  /**
-   * Indicates an interest in sports.
-   */
-  sports: "sports",
-  /**
-   * Indicates an interest in music.
-   */
-  music: "music",
-  /**
-   * Indicates an interest in travel.
-   */
-  travel: "travel",
-  /**
-   * Indicates an interest in technology.
-   */
-  technology: "technology",
-  /**
-   * Indicates an interest in art.
-   */
-  art: "art",
-  /**
-   * Indicates an interest in cooking.
-   */
-  cooking: "cooking",
-  /**
-   * Represents all interests.
-   */
-  all: "all" // Option for all interests
-};
+export enum Interest {
+  flirting = "flirting",
+  gaming = "gaming",
+  sports = "sports",
+  music = "music",
+  travel = "travel",
+  technology = "technology",
+  art = "art",
+  cooking = "cooking",
+  all = "all"
+}
 
-// Schema for UserInfo - equivalent to Pydantic BaseModel
-export const UserInfoSchema = z.object({
-  /**
-   * Unique identifier for the user.
-   */
-  user_id: z.string(),
-  /**
-   * User's age.
-   */
-  age: z.number().int(),
-  /**
-   * User's gender.
-   */
-  gender: z.enum([Gender.male, Gender.female, Gender.other]),
-  /**
-   * User's location (ISO 3166-1 alpha-2 code).
-   */
-  location: z.string().refine(
-    (val) => !!iso3166.whereAlpha2(val),
-    (val) => ({ message: `${val} is not a valid country code.` })
-  ),
-  /**
-   * Preferred language (must be "english").
-   */
-  language: z.string().default("en").refine(
-    (val) => val.toLowerCase() === "en",
-    { message: "Language must be 'english'." }
-  ),
-  /**
-   * A list of user's interests.
-   */
-  interests: z.array(
-    z.enum([
-      Interest.flirting, Interest.gaming, Interest.sports, 
-      Interest.music, Interest.travel, Interest.technology,
-      Interest.art, Interest.cooking, Interest.all
-    ])
-  )
-});
+/**
+ * Language enumeration.
+ */
+export enum Language {
+  ar = "ar",  // Arabic
+  bg = "bg",  // Bulgarian
+  ca = "ca",  // Catalan
+  cs = "cs",  // Czech
+  da = "da",  // Danish
+  de = "de",  // German
+  el = "el",  // Greek
+  en = "en",  // English
+  es = "es",  // Spanish
+  et = "et",  // Estonian
+  fa = "fa",  // Persian
+  fi = "fi",  // Finnish
+  fr = "fr",  // French
+  gl = "gl",  // Galician
+  gu = "gu",  // Gujarati
+  he = "he",  // Hebrew
+  hi = "hi",  // Hindi
+  hr = "hr",  // Croatian
+  hu = "hu",  // Hungarian
+  hy = "hy",  // Armenian
+  id = "id",  // Indonesian
+  it = "it",  // Italian
+  ja = "ja",  // Japanese
+  ka = "ka",  // Georgian
+  ko = "ko",  // Korean
+  ku = "ku",  // Kurdish
+  lt = "lt",  // Lithuanian
+  lv = "lv",  // Latvian
+  mk = "mk",  // Macedonian
+  mn = "mn",  // Mongolian
+  mr = "mr",  // Marathi
+  ms = "ms",  // Malay
+  my = "my",  // Burmese
+  nb = "nb",  // Norwegian Bokmål
+  nl = "nl",  // Dutch
+  pl = "pl",  // Polish
+  pt = "pt",  // Portuguese
+  ro = "ro",  // Romanian
+  ru = "ru",  // Russian
+  sk = "sk",  // Slovak
+  sl = "sl",  // Slovenian
+  sq = "sq",  // Albanian
+  sr = "sr",  // Serbian
+  sv = "sv",  // Swedish
+  th = "th",  // Thai
+  tr = "tr",  // Turkish
+  uk = "uk",  // Ukrainian
+  ur = "ur",  // Urdu
+  vi = "vi"   // Vietnamese
+}
 
-// Schema for Platform
+// Zod Schemas
+
+/**
+ * Contains platform-related metadata.
+ *
+ * Attributes:
+ *     name (string): Platform name
+ *     varient (string): varient for experimentation
+ */
 export const PlatformSchema = z.object({
-  /**
-   * Name of the platform.
-   */
   name: z.string(),
-  /**
-   * Version of the platform.
-   */
-  version: z.string()
+  varient: z.string().default("default")
 });
 
-// Schema for SessionInfo
+export type Platform = z.infer<typeof PlatformSchema>;
+
+/**
+ * Stores user information for ADCortex API.
+ *
+ * Attributes:
+ *     user_id (string): Unique identifier for the user.
+ *     age (number): User's age.
+ *     gender (string): User's gender (must be one of the Gender enum values).
+ *     location (string): User's location (ISO 3166-1 alpha-2 code).
+ *     language (string): Preferred language.
+ *     interests (Interest[]): List of user's interests.
+ */
+export const UserInfoSchema = z.object({
+  user_id: z.string(),
+  age: z.number().refine(val => val > 0, {
+    message: "Age must be greater than 0"
+  }),
+  gender: z.nativeEnum(Gender),
+  location: z.string().refine(val => {
+    // Convert to uppercase for validation
+    const upperVal = val.toUpperCase();
+    // Check if it's a valid ISO 3166-1 alpha-2 code
+    return Object.keys(countries).includes(upperVal);
+  }, {
+    message: "Invalid country code. Must be a valid ISO 3166-1 alpha-2 code."
+  }),
+  language: z.nativeEnum(Language),
+  interests: z.array(z.nativeEnum(Interest))
+});
+
+export type UserInfo = z.infer<typeof UserInfoSchema>;
+
+/**
+ * Stores session details including user.
+ *
+ * Attributes:
+ *     session_id (string): Unique identifier for the session.
+ *     character_name (string): Name of the character (assistant).
+ *     character_metadata (string): Additional metadata for the character as a string.
+ *     user_info (UserInfo): User information.
+ *     platform (Platform): Platform information.
+ */
 export const SessionInfoSchema = z.object({
-  /**
-   * Unique identifier for the session.
-   */
   session_id: z.string(),
-  /**
-   * Name of the character (assistant).
-   */
   character_name: z.string(),
-  /**
-   * Additional metadata for the character.
-   */
-  character_metadata: z.record(z.any()).default({ description: "" }),
-  /**
-   * User information.
-   */
+  character_metadata: z.string(),
   user_info: UserInfoSchema,
-  /**
-   * Platform details.
-   */
   platform: PlatformSchema
 });
 
-// Schema for Message
+export type SessionInfo = z.infer<typeof SessionInfoSchema>;
+
+/**
+ * Represents a single message in a conversation.
+ *
+ * Attributes:
+ *     role (Role): The role of the message sender (either user or AI).
+ *     content (string): The content of the message.
+ */
 export const MessageSchema = z.object({
-  /**
-   * The role of the message sender (either user or AI).
-   */
-  role: z.enum([Role.user, Role.ai]),
-  /**
-   * The content of the message.
-   */
+  role: z.nativeEnum(Role),
   content: z.string()
+  // timestamp: z.number()  // Add timestamp field
 });
 
-// Schema for Ad
+export type Message = z.infer<typeof MessageSchema>;
+
+/**
+ * Represents an advertisement fetched via the ADCortex API.
+ *
+ * Attributes:
+ *     ad_title (string): Title of the advertisement.
+ *     ad_description (string): Description of the advertisement.
+ *     placement_template (string): Template used for ad placement.
+ *     link (string): URL link to the advertised product or service.
+ */
 export const AdSchema = z.object({
-  /**
-   * Identifier for the advertisement.
-   */
-  idx: z.number().int(),
-  /**
-   * Title of the advertisement.
-   */
   ad_title: z.string(),
-  /**
-   * Description of the advertisement.
-   */
   ad_description: z.string(),
-  /**
-   * Template used for ad placement.
-   */
   placement_template: z.string(),
-  /**
-   * URL link to the advertised product or service.
-   */
   link: z.string()
 });
 
-// Create class-like constructs with validation
-export class UserInfo {
+export type Ad = z.infer<typeof AdSchema>;
 
-  user_id!: string;
-  age!: number;
-  gender!: typeof Gender;
-  location!: string;
-  language!: string;
-  interests!: Array<typeof Interest>;
+/**
+ * Schema for validating ADCortex API responses.
+ *
+ * Attributes:
+ *     ads (Ad[]): List of ads returned by the API.
+ */
+export const AdResponseSchema = z.object({
+  ads: z.array(AdSchema)
+});
 
-  constructor(data: unknown) {
-    const validated = UserInfoSchema.parse(data);
-    Object.assign(this, validated);
-  }
-}
-
-export class Platform {
-
-  name!: string;
-  version!: string;
-
-  constructor(data: unknown) {
-    const validated = PlatformSchema.parse(data);
-    Object.assign(this, validated);
-  }
-}
-
-export class SessionInfo {
-
-  session_id!: string;
-  character_name!: string;
-  character_metadata!: Record<string, any>;
-  user_info!: UserInfo;
-  platform!: Platform;
-
-  constructor(data: unknown) {
-    const validated = SessionInfoSchema.parse(data);
-    Object.assign(this, validated);
-  }
-}
-
-export class Message {
-
-  role!: typeof Role;
-  content!: string;
-
-  constructor(data: unknown) {
-    const validated = MessageSchema.parse(data);
-    Object.assign(this, validated);
-  }
-}
-
-export class Ad {
-
-  idx!: number;
-  ad_title!: string;
-  ad_description!: string;
-  placement_template!: string;
-  link!: string;
-
-  constructor(data: unknown) {
-    const validated = AdSchema.parse(data);
-    Object.assign(this, validated);
-  }
-}
-
-// module.exports = {
-//   // Enums
-//   Gender,
-//   Role,
-//   Interest,
-//   // Schemas
-//   UserInfoSchema,
-//   PlatformSchema,
-//   SessionInfoSchema,
-//   MessageSchema,
-//   AdSchema,
-//   // Classes
-//   UserInfo,
-//   Platform,
-//   SessionInfo,
-//   Message,
-//   Ad,
-// };
+export type AdResponse = z.infer<typeof AdResponseSchema>;

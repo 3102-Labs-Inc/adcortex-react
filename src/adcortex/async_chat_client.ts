@@ -1,11 +1,11 @@
 /**
- * Chat Client for ADCortex API with sequential message processing
+ * Async Chat Client for ADCortex API with sequential message processing
  */
 
 import { v4 as uuidv4 } from 'uuid';
 import axios, { AxiosError } from 'axios';
 import dotenv from 'dotenv';
-import axiosRetry, {isNetworkOrIdempotentRequestError} from 'axios-retry';
+import axiosRetry, { isNetworkOrIdempotentRequestError } from 'axios-retry';
 
 import { 
   Ad, 
@@ -33,8 +33,16 @@ axiosRetry(axios, {
   },
 });
 
-
-class AdcortexChatClient {
+/**
+ * Asynchronous chat client for ADCortex API with message queue and circuit breaker support.
+ * 
+ * This client provides asynchronous message processing with features like:
+ * - Message queue management with FIFO behavior
+ * - Circuit breaker pattern for error handling
+ * - Batch processing of messages
+ * - Automatic retries with exponential backoff
+ */
+class AsyncAdcortexChatClient {
   private _session_info: SessionInfo;
   private _context_template: string;
   private _api_key: string;
@@ -49,6 +57,7 @@ class AdcortexChatClient {
   
   // State management
   private _state: ClientState;
+  private _processing_task: Promise<void> | null;
   
   // Circuit breaker
   private _circuit_breaker: CircuitBreaker;
@@ -57,7 +66,7 @@ class AdcortexChatClient {
     session_info: SessionInfo,
     context_template: string = DEFAULT_CONTEXT_TEMPLATE,
     api_key: string|null = null,
-    timeout: number = 5,
+    timeout: number = 10,
     // log_level: number|null = 40,
     disable_logging: boolean = false,
     max_queue_size: number = 100,
@@ -66,7 +75,7 @@ class AdcortexChatClient {
   ) {
     this._session_info = session_info;
     this._context_template = context_template;
-    this._api_key = api_key || process.env.ADCORTEX_API_KEY|| "";
+    this._api_key = api_key || process.env.ADCORTEX_API_KEY || "";
     this._headers = {
       "Content-Type": "application/json",
       "X-API-KEY": this._api_key,
@@ -81,6 +90,7 @@ class AdcortexChatClient {
     
     // State management
     this._state = ClientState.IDLE;
+    this._processing_task = null;
     
     // Circuit breaker
     this._circuit_breaker = new CircuitBreaker(
@@ -88,17 +98,6 @@ class AdcortexChatClient {
       circuit_breaker_timeout,
       disable_logging
     );
-    
-    // Log level configuration is managed by the logging system in JS
-    // We're using console.log/error in this implementation
-    // # Configure logging
-    //     if not disable_logging:
-    //         logger.setLevel(log_level)
-    //         if not logger.handlers:
-    //             handler = logging.StreamHandler()
-    //             formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-    //             handler.setFormatter(formatter)
-    //             logger.addHandler(handler)
     
     if (!this._api_key) {
       throw new Error("ADCORTEX_API_KEY is not set and not provided");
@@ -121,8 +120,7 @@ class AdcortexChatClient {
      * Log info message if logging is enabled.
      */
     if (!this._disable_logging) {
-      console.log(`${this.formatDate(new Date())} - chat_client - INFO - ${message}`);
-      // console.info(message);
+      console.log(`${this.formatDate(new Date())} - async_chat_client - INFO - ${message}`);
     }
   }
 
@@ -131,9 +129,16 @@ class AdcortexChatClient {
      * Log error message if logging is enabled.
      */
     if (!this._disable_logging) {
-      console.error(`${this.formatDate(new Date())} - chat_client - ERROR - ${message}`);
-      // console.error(message);
+      console.error(`${this.formatDate(new Date())} - async_chat_client - ERROR - ${message}`);
     }
+  }
+
+  private _is_task_running(): boolean {
+    /**
+     * Check if processing task is running.
+     */
+    // return this._processing_task !== null && !this._processing_task!.done();
+    return this._processing_task !== null && this._state === ClientState.PROCESSING;
   }
 
   public async __call__(role: Role, content: string): Promise<void> {
@@ -156,16 +161,17 @@ class AdcortexChatClient {
     this._log_info(`Message queued: ${role} - ${content}`);
 
     // Process queue if not already processing, role is user, and circuit breaker is closed
-    if (this._state === ClientState.IDLE && role === Role.user && !this._circuit_breaker.is_open()) {
+    if (this._state === ClientState.IDLE && role === Role.user && !this._circuit_breaker.is_open() && !this._is_task_running()) {
       this._state = ClientState.PROCESSING;
+      this._processing_task = this._process_queue();
       try {
-        await this._process_queue();
+        await this._processing_task;
       } catch (e) {
-        // this._log_error(`Processing failed: ${e instanceof Error ? e.message : String(e)}`);
-        this._log_error(`Processing failed: ${e instanceof Error ? e.message : String(e)}`);
+        this._log_error(`Processing task failed: ${e instanceof Error ? e.message : String(e)}`);
         this._circuit_breaker.record_error();
       } finally {
         this._state = ClientState.IDLE;
+        this._processing_task = null;
       }
     }
   }
@@ -207,32 +213,12 @@ class AdcortexChatClient {
     }
   }
 
-  
-
   private async _fetch_ad_batch(messages: Message[]): Promise<void> {
     /**
      * Fetch an ad based on all messages in a batch.
      */
     const payload = this._prepare_batch_payload(messages);
-    console.log(payload);
-    this._send_request(payload);
-    
-    // Using ts-retry-promise for retry functionality
-    // await retry(
-    //   async () => this._send_request(payload),
-    //   { 
-    //     retries: 3, 
-    //     backoff: 'exponential', 
-    //     delay: 1000, 
-    //     maxDelay: 10000, 
-    //     factor: 2,
-    //     timeout: this._timeout * 1000,
-    //     retryIf: (error) => {
-    //       return axios.isAxiosError(error) && 
-    //         (error.code === 'ECONNABORTED' || error.code === 'ERR_NETWORK');
-    //     }
-    //   }
-    // );
+    await this._send_request(payload);
   }
 
   private _prepare_batch_payload(messages: Message[]): Record<string, any> {
@@ -263,10 +249,9 @@ class AdcortexChatClient {
     };
   }
 
-  
   private async _send_request(payload: Record<string, any>): Promise<void> {
     /**
-     * Send the request to the ADCortex API.
+     * Send the request to the ADCortex API asynchronously.
      */
     try {
       const response = await axios.post(
@@ -277,7 +262,7 @@ class AdcortexChatClient {
           timeout: this._timeout * 1000
         }
       );
-      this._handle_response(response.data);
+      await this._handle_response(response.data);
     } catch (e) {
       if (axios.isAxiosError(e)) {
         if (e.code === 'ECONNABORTED') {
@@ -292,7 +277,7 @@ class AdcortexChatClient {
     }
   }
 
-  private _handle_response(response_data: Record<string,any>): void {
+  private async _handle_response(response_data: Record<string,any>): Promise<void> {
     /**
      * Handle the response from the ad request.
      */
@@ -306,17 +291,22 @@ class AdcortexChatClient {
       }
     } catch (e) {
       this._log_error(`Invalid ad response format: ${e instanceof Error ? e.message : String(e)}`);
+      this._circuit_breaker.record_error();
+      this.latest_ad = null;
     }
   }
 
-  public create_context(latest_ad: Ad): string {
+  public create_context(): string {
     /**
      * Create a context string for the last seen ad.
      */
-    return this._context_template
-      .replace('{ad_title}', latest_ad.ad_title)
-      .replace('{ad_description}', latest_ad.ad_description)
-      .replace('{placement_template}', latest_ad.placement_template);
+    if (this.latest_ad) {
+      return this._context_template
+        .replace('{ad_title}', this.latest_ad.ad_title)
+        .replace('{ad_description}', this.latest_ad.ad_description)
+        .replace('{placement_template}', this.latest_ad.placement_template);
+    }
+    return "";
   }
 
   public get_latest_ad(): Ad | null {
@@ -346,4 +336,4 @@ class AdcortexChatClient {
   }
 }
 
-export{AdcortexChatClient}
+export {AsyncAdcortexChatClient}

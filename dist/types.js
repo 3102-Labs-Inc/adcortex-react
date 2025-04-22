@@ -1,235 +1,207 @@
 /**
  * Types for ADCortex API.
  *
- * This module defines data classes and enumerations used by the ADCortex API client.
+ * This module defines interfaces, enums, and validation schemas used by the ADCortex API client.
  */
-import z from 'zod';
-import iso3166 from 'iso-3166-1';
+import { z } from 'zod';
+import { countries } from 'countries-list';
 /**
  * Gender enumeration.
  *
- * @readonly
- * @enum {string}
+ * Attributes:
+ *     male: Represents the male gender.
+ *     female: Represents the female gender.
+ *     other: Represents any gender not covered by male or female.
  */
-export const Gender = {
-    /**
-     * Represents the male gender.
-     */
-    male: "male",
-    /**
-     * Represents the female gender.
-     */
-    female: "female",
-    /**
-     * Represents any gender not covered by male or female.
-     */
-    other: "other"
-};
+export var Gender;
+(function (Gender) {
+    Gender["male"] = "male";
+    Gender["female"] = "female";
+    Gender["other"] = "other";
+})(Gender || (Gender = {}));
 /**
  * Role enumeration.
  *
- * @readonly
- * @enum {string}
+ * Attributes:
+ *     user: Indicates that the message sender is a user.
+ *     ai: Indicates that the message sender is an AI.
  */
-export const Role = {
-    /**
-     * Indicates that the message sender is a user.
-     */
-    user: "user",
-    /**
-     * Indicates that the message sender is an AI.
-     */
-    ai: "ai"
-};
+export var Role;
+(function (Role) {
+    Role["user"] = "user";
+    Role["ai"] = "ai";
+})(Role || (Role = {}));
 /**
  * Interest enumeration.
  *
- * @readonly
- * @enum {string}
+ * Attributes:
+ *     flirting: Indicates an interest in flirting.
+ *     gaming: Indicates an interest in gaming.
+ *     sports: Indicates an interest in sports.
+ *     music: Indicates an interest in music.
+ *     travel: Indicates an interest in travel.
+ *     technology: Indicates an interest in technology.
+ *     art: Indicates an interest in art.
+ *     cooking: Indicates an interest in cooking.
+ *     all: Represents all interests.
  */
-export const Interest = {
-    /**
-     * Indicates an interest in flirting.
-     */
-    flirting: "flirting",
-    /**
-     * Indicates an interest in gaming.
-     */
-    gaming: "gaming",
-    /**
-     * Indicates an interest in sports.
-     */
-    sports: "sports",
-    /**
-     * Indicates an interest in music.
-     */
-    music: "music",
-    /**
-     * Indicates an interest in travel.
-     */
-    travel: "travel",
-    /**
-     * Indicates an interest in technology.
-     */
-    technology: "technology",
-    /**
-     * Indicates an interest in art.
-     */
-    art: "art",
-    /**
-     * Indicates an interest in cooking.
-     */
-    cooking: "cooking",
-    /**
-     * Represents all interests.
-     */
-    all: "all" // Option for all interests
-};
-// Schema for UserInfo - equivalent to Pydantic BaseModel
-export const UserInfoSchema = z.object({
-    /**
-     * Unique identifier for the user.
-     */
-    user_id: z.string(),
-    /**
-     * User's age.
-     */
-    age: z.number().int(),
-    /**
-     * User's gender.
-     */
-    gender: z.enum([Gender.male, Gender.female, Gender.other]),
-    /**
-     * User's location (ISO 3166-1 alpha-2 code).
-     */
-    location: z.string().refine((val) => !!iso3166.whereAlpha2(val), (val) => ({ message: `${val} is not a valid country code.` })),
-    /**
-     * Preferred language (must be "english").
-     */
-    language: z.string().default("en").refine((val) => val.toLowerCase() === "en", { message: "Language must be 'english'." }),
-    /**
-     * A list of user's interests.
-     */
-    interests: z.array(z.enum([
-        Interest.flirting, Interest.gaming, Interest.sports,
-        Interest.music, Interest.travel, Interest.technology,
-        Interest.art, Interest.cooking, Interest.all
-    ]))
-});
-// Schema for Platform
+export var Interest;
+(function (Interest) {
+    Interest["flirting"] = "flirting";
+    Interest["gaming"] = "gaming";
+    Interest["sports"] = "sports";
+    Interest["music"] = "music";
+    Interest["travel"] = "travel";
+    Interest["technology"] = "technology";
+    Interest["art"] = "art";
+    Interest["cooking"] = "cooking";
+    Interest["all"] = "all";
+})(Interest || (Interest = {}));
+/**
+ * Language enumeration.
+ */
+export var Language;
+(function (Language) {
+    Language["ar"] = "ar";
+    Language["bg"] = "bg";
+    Language["ca"] = "ca";
+    Language["cs"] = "cs";
+    Language["da"] = "da";
+    Language["de"] = "de";
+    Language["el"] = "el";
+    Language["en"] = "en";
+    Language["es"] = "es";
+    Language["et"] = "et";
+    Language["fa"] = "fa";
+    Language["fi"] = "fi";
+    Language["fr"] = "fr";
+    Language["gl"] = "gl";
+    Language["gu"] = "gu";
+    Language["he"] = "he";
+    Language["hi"] = "hi";
+    Language["hr"] = "hr";
+    Language["hu"] = "hu";
+    Language["hy"] = "hy";
+    Language["id"] = "id";
+    Language["it"] = "it";
+    Language["ja"] = "ja";
+    Language["ka"] = "ka";
+    Language["ko"] = "ko";
+    Language["ku"] = "ku";
+    Language["lt"] = "lt";
+    Language["lv"] = "lv";
+    Language["mk"] = "mk";
+    Language["mn"] = "mn";
+    Language["mr"] = "mr";
+    Language["ms"] = "ms";
+    Language["my"] = "my";
+    Language["nb"] = "nb";
+    Language["nl"] = "nl";
+    Language["pl"] = "pl";
+    Language["pt"] = "pt";
+    Language["ro"] = "ro";
+    Language["ru"] = "ru";
+    Language["sk"] = "sk";
+    Language["sl"] = "sl";
+    Language["sq"] = "sq";
+    Language["sr"] = "sr";
+    Language["sv"] = "sv";
+    Language["th"] = "th";
+    Language["tr"] = "tr";
+    Language["uk"] = "uk";
+    Language["ur"] = "ur";
+    Language["vi"] = "vi"; // Vietnamese
+})(Language || (Language = {}));
+// Zod Schemas
+/**
+ * Contains platform-related metadata.
+ *
+ * Attributes:
+ *     name (string): Platform name
+ *     varient (string): varient for experimentation
+ */
 export const PlatformSchema = z.object({
-    /**
-     * Name of the platform.
-     */
     name: z.string(),
-    /**
-     * Version of the platform.
-     */
-    version: z.string()
+    varient: z.string().default("default")
 });
-// Schema for SessionInfo
+/**
+ * Stores user information for ADCortex API.
+ *
+ * Attributes:
+ *     user_id (string): Unique identifier for the user.
+ *     age (number): User's age.
+ *     gender (string): User's gender (must be one of the Gender enum values).
+ *     location (string): User's location (ISO 3166-1 alpha-2 code).
+ *     language (string): Preferred language.
+ *     interests (Interest[]): List of user's interests.
+ */
+export const UserInfoSchema = z.object({
+    user_id: z.string(),
+    age: z.number().refine(val => val > 0, {
+        message: "Age must be greater than 0"
+    }),
+    gender: z.nativeEnum(Gender),
+    location: z.string().refine(val => {
+        // Convert to uppercase for validation
+        const upperVal = val.toUpperCase();
+        // Check if it's a valid ISO 3166-1 alpha-2 code
+        return Object.keys(countries).includes(upperVal);
+    }, {
+        message: "Invalid country code. Must be a valid ISO 3166-1 alpha-2 code."
+    }),
+    language: z.nativeEnum(Language),
+    interests: z.array(z.nativeEnum(Interest))
+});
+/**
+ * Stores session details including user.
+ *
+ * Attributes:
+ *     session_id (string): Unique identifier for the session.
+ *     character_name (string): Name of the character (assistant).
+ *     character_metadata (string): Additional metadata for the character as a string.
+ *     user_info (UserInfo): User information.
+ *     platform (Platform): Platform information.
+ */
 export const SessionInfoSchema = z.object({
-    /**
-     * Unique identifier for the session.
-     */
     session_id: z.string(),
-    /**
-     * Name of the character (assistant).
-     */
     character_name: z.string(),
-    /**
-     * Additional metadata for the character.
-     */
-    character_metadata: z.record(z.any()).default({ description: "" }),
-    /**
-     * User information.
-     */
+    character_metadata: z.string(),
     user_info: UserInfoSchema,
-    /**
-     * Platform details.
-     */
     platform: PlatformSchema
 });
-// Schema for Message
+/**
+ * Represents a single message in a conversation.
+ *
+ * Attributes:
+ *     role (Role): The role of the message sender (either user or AI).
+ *     content (string): The content of the message.
+ */
 export const MessageSchema = z.object({
-    /**
-     * The role of the message sender (either user or AI).
-     */
-    role: z.enum([Role.user, Role.ai]),
-    /**
-     * The content of the message.
-     */
+    role: z.nativeEnum(Role),
     content: z.string()
+    // timestamp: z.number()  // Add timestamp field
 });
-// Schema for Ad
+/**
+ * Represents an advertisement fetched via the ADCortex API.
+ *
+ * Attributes:
+ *     ad_title (string): Title of the advertisement.
+ *     ad_description (string): Description of the advertisement.
+ *     placement_template (string): Template used for ad placement.
+ *     link (string): URL link to the advertised product or service.
+ */
 export const AdSchema = z.object({
-    /**
-     * Identifier for the advertisement.
-     */
-    idx: z.number().int(),
-    /**
-     * Title of the advertisement.
-     */
     ad_title: z.string(),
-    /**
-     * Description of the advertisement.
-     */
     ad_description: z.string(),
-    /**
-     * Template used for ad placement.
-     */
     placement_template: z.string(),
-    /**
-     * URL link to the advertised product or service.
-     */
     link: z.string()
 });
-// Create class-like constructs with validation
-export class UserInfo {
-    constructor(data) {
-        const validated = UserInfoSchema.parse(data);
-        Object.assign(this, validated);
-    }
-}
-export class Platform {
-    constructor(data) {
-        const validated = PlatformSchema.parse(data);
-        Object.assign(this, validated);
-    }
-}
-export class SessionInfo {
-    constructor(data) {
-        const validated = SessionInfoSchema.parse(data);
-        Object.assign(this, validated);
-    }
-}
-export class Message {
-    constructor(data) {
-        const validated = MessageSchema.parse(data);
-        Object.assign(this, validated);
-    }
-}
-export class Ad {
-    constructor(data) {
-        const validated = AdSchema.parse(data);
-        Object.assign(this, validated);
-    }
-}
-// module.exports = {
-//   // Enums
-//   Gender,
-//   Role,
-//   Interest,
-//   // Schemas
-//   UserInfoSchema,
-//   PlatformSchema,
-//   SessionInfoSchema,
-//   MessageSchema,
-//   AdSchema,
-//   // Classes
-//   UserInfo,
-//   Platform,
-//   SessionInfo,
-//   Message,
-//   Ad,
-// };
+/**
+ * Schema for validating ADCortex API responses.
+ *
+ * Attributes:
+ *     ads (Ad[]): List of ads returned by the API.
+ */
+export const AdResponseSchema = z.object({
+    ads: z.array(AdSchema)
+});

@@ -1,6 +1,17 @@
 // "ADCortex Javascript SDK"
 
-import { AdcortexClient } from './client';
-import { SessionInfo,Message,Ad,UserInfo,Platform } from './types';
+import { AdcortexChatClient } from './chat_client';
+import { AsyncAdcortexChatClient } from './async_chat_client';
+import { AdSchema, MessageSchema, SessionInfoSchema, Role, Gender, Language, Interest } from './types';
 
-export { AdcortexClient, SessionInfo, Message, Ad, UserInfo, Platform };
+export { 
+    AdcortexChatClient, 
+    AsyncAdcortexChatClient,
+    AdSchema,
+    MessageSchema, 
+    SessionInfoSchema,
+    Role,
+    Gender,
+    Language,
+    Interest
+};

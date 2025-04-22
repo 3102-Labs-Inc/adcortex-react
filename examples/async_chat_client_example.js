@@ -1,0 +1,126 @@
+/**
+ * Example script demonstrating the asynchronous AdcortexChatClient usage.
+ */
+
+import { createLogger, format, transports } from 'winston';
+import dotenv from 'dotenv';
+
+import { AsyncAdcortexChatClient } from 'adcortex-js';
+import { SessionInfoSchema, Role } from "adcortex-js";
+
+// Load environment variables
+dotenv.config();
+
+// Configure logging
+const logger = createLogger({
+  level: 'info',
+  format: format.combine(
+    format.timestamp(),
+    format.printf(({ timestamp, level, message }) => {
+      return `${timestamp} - [${level.toUpperCase()}]: ${message}`;
+    })
+  ),
+  transports: [new transports.Console()]
+});
+
+function create_session_info() {
+    /**
+     * Create a sample session info object.
+     */
+    return SessionInfoSchema.parse({
+      session_id: "14149",  // Fixed session ID that works
+      character_name: "Alex",
+      character_metadata: "Friendly and humorous assistant",  // String instead of dict
+      user_info: {
+        user_id: "12345",
+        age: 20,
+        gender: "male",  // Type assertion for enum
+        location: "US",
+        language: "en",  // Type assertion for enum
+        interests: ["flirting", "gaming"]  // Using enum values
+      },
+      platform: {
+        name: "ChatBotX", 
+        varient: "1.0.2"
+      }
+    });
+  }
+  
+
+function process_chat_interaction(chat_client, role, content){
+    /**
+     * Process a single chat interaction and return the context if an ad was found.
+     */
+    try {
+    // Send message and process queue
+    chat_client.__call__(role, content);
+    
+    // Check if we got a new ad
+    const latest_ad = chat_client.get_latest_ad();
+    if (latest_ad) {
+        return chat_client.create_context(latest_ad);
+    }
+    return null;
+    } catch (e) {
+    logger.error(`Error processing chat interaction: ${e instanceof Error ? e.message : String(e)}`);
+    return null;
+    }
+}
+  
+
+async function process_conversation(chat_client) {
+  /**
+   * Process a simulated conversation asynchronously.
+   */
+  const conversation = [
+    { role: Role.user, content: "I'm looking for a new gaming laptop" },
+    { role: Role.ai, content: "What's your budget and preferred screen size?" },
+    { role: Role.user, content: "Around $1500 and 15-17 inches" },
+    { role: Role.ai, content: "Great! Do you need it for gaming or work?" },
+    { role: Role.user, content: "Mostly gaming, but some work too" },
+  ];
+
+  for (const { role, content } of conversation) {
+    logger.info(`${role}: ${content}`);
+    const context = await process_chat_interaction(chat_client, role, content);
+    
+    if (context) {
+      logger.info("Ad context generated:");
+      logger.info(context);
+    }
+    
+    // Check client health
+    if (!chat_client.is_healthy()) {
+      logger.warn("Client is not in a healthy state");
+      break;
+    }
+    
+    // Add a small delay between messages
+    await new Promise(resolve => setTimeout(resolve, 500)); // 0.5 second delay
+  }
+}
+
+async function main() {
+  /**
+   * Main async function demonstrating chat client usage.
+   */
+  // Initialize the chat client
+  const chat_client = new AsyncAdcortexChatClient(
+    create_session_info(),
+    null, // Default context template
+    null, // Default API key from env
+    5, // timeout in seconds
+    // log_level not used in TS version
+    false, // disable_logging
+    50 // max_queue_size
+  );
+
+  // Process the conversation
+  await process_conversation(chat_client);
+}
+
+// Run the async main function
+main().catch(err => {
+  logger.error(`Main process failed: ${err}`);
+  process.exit(1);
+});
