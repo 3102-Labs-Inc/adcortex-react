@@ -3,15 +3,17 @@
  *
  * This module defines interfaces, enums, and validation schemas used by the ADCortex API client.
  */
+
 import { z } from 'zod';
 import { countries } from 'countries-list';
+
 /**
  * Gender enumeration.
- *
- * Attributes:
- *     male: Represents the male gender.
- *     female: Represents the female gender.
- *     other: Represents any gender not covered by male or female.
+ * 
+ * @enum {string}
+ * @property {string} male - Represents the male gender.
+ * @property {string} female - Represents the female gender.
+ * @property {string} other - Represents any other gender.
  */
 export var Gender;
 (function (Gender) {
@@ -19,31 +21,33 @@ export var Gender;
     Gender["female"] = "female";
     Gender["other"] = "other";
 })(Gender || (Gender = {}));
+
 /**
  * Role enumeration.
- *
- * Attributes:
- *     user: Indicates that the message sender is a user.
- *     ai: Indicates that the message sender is an AI.
+ * 
+ * @enum {string}
+ * @property {string} user - Indicates that the message sender is a user.
+ * @property {string} ai - Indicates that the message sender is an AI.
  */
 export var Role;
 (function (Role) {
     Role["user"] = "user";
     Role["ai"] = "ai";
 })(Role || (Role = {}));
+
 /**
  * Interest enumeration.
- *
- * Attributes:
- *     flirting: Indicates an interest in flirting.
- *     gaming: Indicates an interest in gaming.
- *     sports: Indicates an interest in sports.
- *     music: Indicates an interest in music.
- *     travel: Indicates an interest in travel.
- *     technology: Indicates an interest in technology.
- *     art: Indicates an interest in art.
- *     cooking: Indicates an interest in cooking.
- *     all: Represents all interests.
+ * 
+ * @enum {string}
+ * @property {string} flirting - Interest in flirting.
+ * @property {string} gaming - Interest in gaming.
+ * @property {string} sports - Interest in sports.
+ * @property {string} music - Interest in music.
+ * @property {string} travel - Interest in travel.
+ * @property {string} technology - Interest in technology.
+ * @property {string} art - Interest in art.
+ * @property {string} cooking - Interest in cooking.
+ * @property {string} all - Interest in all topics.
  */
 export var Interest;
 (function (Interest) {
@@ -57,8 +61,12 @@ export var Interest;
     Interest["cooking"] = "cooking";
     Interest["all"] = "all";
 })(Interest || (Interest = {}));
+
 /**
  * Language enumeration.
+ * 
+ * @enum {string}
+ * Supported ISO 639-1 two-letter language codes.
  */
 export var Language;
 (function (Language) {
@@ -110,30 +118,33 @@ export var Language;
     Language["tr"] = "tr";
     Language["uk"] = "uk";
     Language["ur"] = "ur";
-    Language["vi"] = "vi"; // Vietnamese
+    Language["vi"] = "vi";
 })(Language || (Language = {}));
+
 // Zod Schemas
+
 /**
- * Contains platform-related metadata.
+ * Schema for platform metadata.
  *
- * Attributes:
- *     name (string): Platform name
- *     varient (string): varient for experimentation
+ * @typedef {Object} Platform
+ * @property {string} name - Platform name (e.g., website, app).
+ * @property {string} varient - Variant for experimentation (default: "default").
  */
 export const PlatformSchema = z.object({
     name: z.string(),
     varient: z.string().default("default")
 });
+
 /**
- * Stores user information for ADCortex API.
+ * Schema for user information.
  *
- * Attributes:
- *     user_id (string): Unique identifier for the user.
- *     age (number): User's age.
- *     gender (string): User's gender (must be one of the Gender enum values).
- *     location (string): User's location (ISO 3166-1 alpha-2 code).
- *     language (string): Preferred language.
- *     interests (Interest[]): List of user's interests.
+ * @typedef {Object} UserInfo
+ * @property {string} user_id - Unique identifier for the user.
+ * @property {number} age - User's age (must be greater than 0).
+ * @property {Gender} gender - User's gender.
+ * @property {string} location - ISO 3166-1 alpha-2 country code.
+ * @property {Language} language - User's preferred language.
+ * @property {Interest[]} interests - List of user interests.
  */
 export const UserInfoSchema = z.object({
     user_id: z.string(),
@@ -142,9 +153,7 @@ export const UserInfoSchema = z.object({
     }),
     gender: z.nativeEnum(Gender),
     location: z.string().refine(val => {
-        // Convert to uppercase for validation
         const upperVal = val.toUpperCase();
-        // Check if it's a valid ISO 3166-1 alpha-2 code
         return Object.keys(countries).includes(upperVal);
     }, {
         message: "Invalid country code. Must be a valid ISO 3166-1 alpha-2 code."
@@ -152,15 +161,16 @@ export const UserInfoSchema = z.object({
     language: z.nativeEnum(Language),
     interests: z.array(z.nativeEnum(Interest))
 });
+
 /**
- * Stores session details including user.
+ * Schema for session information.
  *
- * Attributes:
- *     session_id (string): Unique identifier for the session.
- *     character_name (string): Name of the character (assistant).
- *     character_metadata (string): Additional metadata for the character as a string.
- *     user_info (UserInfo): User information.
- *     platform (Platform): Platform information.
+ * @typedef {Object} SessionInfo
+ * @property {string} session_id - Unique identifier for the session.
+ * @property {string} character_name - Name of the AI character/assistant.
+ * @property {string} character_metadata - Additional metadata as a serialized string.
+ * @property {UserInfo} user_info - Associated user information.
+ * @property {Platform} platform - Associated platform information.
  */
 export const SessionInfoSchema = z.object({
     session_id: z.string(),
@@ -169,26 +179,28 @@ export const SessionInfoSchema = z.object({
     user_info: UserInfoSchema,
     platform: PlatformSchema
 });
+
 /**
- * Represents a single message in a conversation.
+ * Schema for a single message in a conversation.
  *
- * Attributes:
- *     role (Role): The role of the message sender (either user or AI).
- *     content (string): The content of the message.
+ * @typedef {Object} Message
+ * @property {Role} role - Role of the sender (user or AI).
+ * @property {string} content - Content of the message.
  */
 export const MessageSchema = z.object({
     role: z.nativeEnum(Role),
     content: z.string()
-    // timestamp: z.number()  // Add timestamp field
+    // timestamp: z.number()  // Optional: Uncomment if timestamp tracking is needed
 });
+
 /**
- * Represents an advertisement fetched via the ADCortex API.
+ * Schema for an advertisement object.
  *
- * Attributes:
- *     ad_title (string): Title of the advertisement.
- *     ad_description (string): Description of the advertisement.
- *     placement_template (string): Template used for ad placement.
- *     link (string): URL link to the advertised product or service.
+ * @typedef {Object} Ad
+ * @property {string} ad_title - Title of the advertisement.
+ * @property {string} ad_description - Description of the advertisement.
+ * @property {string} placement_template - Template used for placing the ad.
+ * @property {string} link - URL link to the advertised service or product.
  */
 export const AdSchema = z.object({
     ad_title: z.string(),
@@ -196,11 +208,12 @@ export const AdSchema = z.object({
     placement_template: z.string(),
     link: z.string()
 });
+
 /**
- * Schema for validating ADCortex API responses.
+ * Schema for API response containing advertisements.
  *
- * Attributes:
- *     ads (Ad[]): List of ads returned by the API.
+ * @typedef {Object} AdResponse
+ * @property {Ad[]} ads - List of advertisements.
  */
 export const AdResponseSchema = z.object({
     ads: z.array(AdSchema)

@@ -9,7 +9,8 @@
   ],
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "docs": "typedoc --options typedoc.json"
   },
   "repository": {
     "type": "git",
@@ -47,6 +48,7 @@
     }
   },
   "devDependencies": {
-    "@types/node": "^22.14.1"
+    "@types/node": "^22.14.1",
+    "typedoc": "^0.28.3"
   }
 }
