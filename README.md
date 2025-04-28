@@ -1,11 +1,10 @@
 # AdCortex JavaScript SDK
 
-A powerful JavaScript/TypeScript client library for integrating contextual advertising into chat applications using the AdCortex API.
+JavaScript/TypeScript client library for integrating contextual advertising into chat applications using the AdCortex API.
 
 ## Features
-
 - 🚀 **Synchronous and Asynchronous Clients** - Choose the right client for your application needs
-- 🧠 **Intelligent Ad Matching** - Contextually relevant ads based on conversation content
+- 🧠 **Intelligent Ad Matching** - Contextually relevant ads based on context
 - 🔄 **Robust Error Handling** - Circuit breaker pattern prevents cascading failures
 - 🔍 **Type Safety** - Full TypeScript support with Zod schema validation
 - 📊 **Queue Management** - Efficient message queue with FIFO behavior
@@ -22,17 +21,7 @@ npm install adcortex-js
 Create a `.env` file in your project root:
 
 ```
-ADCORTEX_API_KEY="your_api_key_here"
-```
-
-Alternatively, you can provide the API key directly when creating the client:
-
-```javascript
-const chatClient = new AdcortexChatClient(
-  sessionInfo,
-  undefined,
-  "your_api_key_here"
-);
+ADCORTEX_API_KEY=your_api_key_here
 ```
 
 ## Quick Start
@@ -45,18 +34,18 @@ import { AdcortexChatClient, SessionInfoSchema, Role, Gender, Interest, Language
 // Initialize session info
 const sessionInfo = SessionInfoSchema.parse({
   session_id: "session123",
-  character_name: "Assistant",
-  character_metadata: "Friendly AI assistant",
+  character_name: "Assistant", // AI Name/Character Name
+  character_metadata: "Friendly AI assistant", //AI Character Description
   user_info: {
-    user_id: "user456",
-    age: 25,
-    gender: Gender.male,
-    location: "US",
+    user_id: "user456", //User ID
+    age: 25, //User Age
+    gender: Gender.male, //User Gender
+    location: "US", // Country Code - 2 Letter
     language: Language.en,
     interests: [Interest.technology, Interest.gaming]
   },
   platform: {
-    name: "MyApp",
+    name: "MyApp", //Name of your platform
     varient: "1.0.0"
   }
 });
@@ -458,13 +447,4 @@ For optimal performance:
 3. **Set appropriate timeouts** for your network conditions
 4. **Use AsyncAdcortexChatClient** for high-throughput applications
 
-## Troubleshooting
 
-Common issues and solutions:
-
-1. **API request failing** - Check API key and network connectivity
-2. **Circuit breaker open** - Too many errors occurred; implement backoff strategy
-3. **No ads being returned** - Ensure user info and messages contain relevant context
-4. **Type validation errors** - Check that your data structures match the expected types
-
----
