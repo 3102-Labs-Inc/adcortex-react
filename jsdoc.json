@@ -1,0 +1,16 @@
+{
+    "source": {
+      "include": ["./dist"],
+      "includePattern": ".+\\.js$"
+    },
+    "opts": {
+      "destination": "./docs",
+      "recurse": true,
+      "readme": "./README.md"
+    },
+    "templates": {
+      "default": {
+        "outputSourceFiles": false
+      }
+    }
+  }
