@@ -41,6 +41,11 @@
   },
   "exports": {
     ".": {
+      "edge": {
+        "import": "./dist/index.edge.js",
+        "require": "./dist/index.edge.js",
+        "types": "./dist/index.edge.d.ts"
+      },
       "require": "./dist/index.js",
       "import": "./dist/index.js",
       "types": "./dist/index.d.ts"

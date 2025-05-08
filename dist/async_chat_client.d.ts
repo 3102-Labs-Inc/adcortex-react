@@ -1,8 +1,8 @@
 /**
  * Async Chat Client for ADCortex API with sequential message processing
  */
-import { Ad, Role, SessionInfo } from './types';
-import { ClientState } from './state';
+import { Ad, Role, SessionInfo } from './types.js';
+import { ClientState } from './state.js';
 /**
  * Asynchronous chat client for ADCortex API with message queue and circuit breaker support.
  *

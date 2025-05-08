@@ -4,7 +4,6 @@
 
 import { v4 as uuidv4 } from 'uuid';
 import axios, { AxiosError } from 'axios';
-import dotenv from 'dotenv';
 import axiosRetry, { isNetworkOrIdempotentRequestError } from 'axios-retry';
 
 import { 
@@ -15,11 +14,8 @@ import {
   MessageSchema, 
   Role, 
   SessionInfo 
-} from './types';
-import { ClientState, CircuitBreaker } from './state';
-
-// Load environment variables from .env file
-dotenv.config();
+} from './types.js';
+import { ClientState, CircuitBreaker } from './state.js';
 
 const DEFAULT_CONTEXT_TEMPLATE = "Here is a product the user might like: {ad_title} - {ad_description}: here is a sample way to present it: {placement_template}";
 const AD_FETCH_URL = "https://adcortex.3102labs.com/ads/matchv2";

@@ -1,8 +1,8 @@
 /**
  * Chat Client for ADCortex API with sequential message processing
  */
-import { Ad, Role, SessionInfo } from './types';
-import { ClientState } from './state';
+import { Ad, Role, SessionInfo } from './types.js';
+import { ClientState } from './state.js';
 declare class AdcortexChatClient {
     private _session_info;
     private _context_template;

@@ -1,8 +1,10 @@
 // "ADCortex Javascript SDK"
+import dotenv from 'dotenv';
+dotenv.config();
 
-import { AdcortexChatClient } from './chat_client';
-import { AsyncAdcortexChatClient } from './async_chat_client';
-import { AdSchema, MessageSchema, SessionInfoSchema, Role, Gender, Language, Interest } from './types';
+import { AdcortexChatClient } from './chat_client.js';
+import { AsyncAdcortexChatClient } from './async_chat_client.js';
+import { AdSchema, MessageSchema, SessionInfoSchema, Role, Gender, Language, Interest } from './types.js';
 
 export { 
     AdcortexChatClient, 
