@@ -1,0 +1,11 @@
+{
+    "entryPoints": ["./dist/index.js"],
+    "out": "docs",
+    "name": "AdCortex JavaScript SDK",
+    "excludePrivate": false,
+    "excludeExternals": true,
+    "theme": "default",
+    "readme": "README.md",
+    "tsconfig": "tsconfig.json",
+    "entryPointStrategy": "resolve"
+  }
